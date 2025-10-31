@@ -1,0 +1,99 @@
+{% extends 'QuanLi/quanli_master.html' %}
+{% load static %}
+{% load humanize %}
+{% block title %}Quản Lí - Khuyến Mãi{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h2 class="text-center text-warning text-uppercase mb-4 fw-bold">Thêm khuyến mãi</h2>
+
+    <div class="card shadow-lg p-4 mx-auto" style="max-width: 600px;">
+        <form action="{% url 'ThemKM_QL' %}" method="post" id="kmForm">
+            {% csrf_token %}
+            
+            <div class="mb-3">
+                <label for="tenKM" class="form-label fw-semibold">Tên khuyến mãi</label>
+                <input type="text" name="tenKM" id="tenKM" class="form-control" placeholder="Nhập tên khuyến mãi..." required>
+            </div>
+
+            <div class="mb-3">
+                <label for="ngayBatDau" class="form-label fw-semibold">Ngày bắt đầu</label>
+                <input type="date" name="ngayBatDau" id="ngayBatDau" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="ngayKetThuc" class="form-label fw-semibold">Ngày kết thúc</label>
+                <input type="date" name="ngayKetThuc" id="ngayKetThuc" class="form-control" required>
+            </div>
+
+            <div class="mb-4">
+                <label for="phanTramGiam" class="form-label fw-semibold">Giảm giá (%)</label>
+                <input type="number" name="phanTramGiam" id="phanTramGiam" class="form-control" min="1" placeholder="Nhập % giảm..." required>
+            </div>
+
+            <div class="d-grid">
+                <button type="submit" class="btn btn-success btn-lg">
+                    <i class="bi bi-plus-circle me-1"></i> Thêm khuyến mãi
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Validate Script -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#kmForm").submit(function (event) {
+            var tenKM = $("#tenKM").val();
+            var ngayBatDau = $("#ngayBatDau").val();
+            var ngayKetThuc = $("#ngayKetThuc").val();
+            var phanTramGiam = $("#phanTramGiam").val();
+
+            if (tenKM === "" || ngayBatDau === "" || ngayKetThuc === "" || phanTramGiam === "") {
+                alert("Vui lòng điền đầy đủ thông tin.");
+                event.preventDefault();
+                return false;
+            }
+
+            if (new Date(ngayKetThuc) <= new Date(ngayBatDau)) {
+                alert("Ngày kết thúc phải sau ngày bắt đầu.");
+                event.preventDefault();
+                return false;
+            }
+
+            if (!Number.isInteger(parseFloat(phanTramGiam)) || parseFloat(phanTramGiam) <= 0) {
+                alert("Giảm giá phải là số nguyên dương.");
+                event.preventDefault();
+                return false;
+            }
+        });
+    });
+</script>
+
+<style>
+    body {
+        background-color: #f8f9fa;
+    }
+
+    .card {
+        border-radius: 12px;
+        background-color: #ffffff;
+    }
+
+    .form-label {
+        font-size: 0.95rem;
+    }
+
+    .btn-success {
+        font-weight: 600;
+        padding: 10px;
+        transition: all 0.2s ease;
+    }
+
+    .btn-success:hover {
+        transform: scale(1.02);
+        opacity: 0.9;
+    }
+</style>
+{% endblock %}

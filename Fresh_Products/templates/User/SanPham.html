@@ -1,0 +1,83 @@
+{% extends "User/master.html" %}
+{% load static %}
+{% load humanize %}
+
+{% block title %} Sản phẩm {% endblock %}
+
+{% block content %}
+
+<!-- Banner -->
+<div class="banner text-center text-success py-5 mb-4" style="background-color:aquamarine;">
+    <h2 class="fw-bold">Danh Sách Sản Phẩm</h2>
+    <p>Mua sắm dễ dàng - Giá tốt mỗi ngày</p>
+</div>
+
+<!-- Bộ lọc -->
+<div class="container mb-4 d-flex justify-content-between align-items-center">
+    <form method="get" class="d-flex gap-2">
+        <select name="sort" onchange="this.form.submit()" class="form-select w-auto">
+            <option value="">Sắp xếp theo</option>
+            <option value="masp">Mặc định</option>
+            <option value="gia1dv">Giá tăng dần</option>
+            <option value="-gia1dv">Giá giảm dần</option>
+        </select>
+    </form>
+</div>
+
+<!-- Danh sách sản phẩm -->
+<div class="container ">
+    <div class="row g-4">
+        {% for sp in sanphams %}
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+            <div class="card h-100 border-0 shadow-sm product-card">
+                <div class="position-relative overflow-hidden">
+                    <a href="{% url 'chitietsanpham' sp.masp %}">
+                        <img src="{% static 'HinhAnh/Hình ' %}{{ sp.masp }}/HINH1.jfif" 
+                             class="card-img-top anh img-fluid product-img" alt="{{ sp.tensp }}">
+                    </a>
+                    {% if sp.makm %}
+                        <div class="discount-triangle">
+                            <div class="discount-text product-card">
+                                -{{ sp.makm.giamgia|floatformat:0 }}%
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="card-body text-center">
+                    <h6 class="card-title fw-bold text-dark mb-2">
+                        {{ sp.tensp|truncatechars:30 }}
+                    </h6>
+
+                    {% if sp.phan_tram_giam %}
+                        <div>
+                            <span class="text-decoration-line-through text-danger small">
+                                {{ sp.gia1dv|intcomma }} VNĐ
+                            </span>
+                            <span class="fw-bold text-success fs-6">
+                                {{ sp.gia_sau_km|floatformat:0|intcomma }} VNĐ
+                            </span>
+                        </div>
+                    {% else %}
+                        <div class="fw-bold text-success fs-6">
+                            {{ sp.gia1dv|intcomma }} VNĐ
+                        </div>
+                    {% endif %}
+
+                    <a href="{% url 'chitietsanpham' sp.masp %}" 
+                       class="btn btn-success mt-3 w-100 rounded-pill">
+                        Xem chi tiết
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- CSS -->
+<link rel="stylesheet" href="{% static 'khuyenmai.css' %}">
+
+
+ 
+{% endblock %}
+

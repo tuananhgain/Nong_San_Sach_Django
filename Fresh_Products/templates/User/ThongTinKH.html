@@ -1,0 +1,35 @@
+{% extends "User/master2.html" %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}Thông Tin Khách Hàng{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+     <h2 class="text-danger text-uppercase mb-4 text-center">Thông tin khách hàng</h2>
+
+{% if khach %}
+<div class="card-body shadow border-0 container mx-auto" style="max-width: 600px;">
+  <div class="card-body p-4">
+    <div class="col-md-12">
+      <div class="row g-2">
+        <label for="name" class="form-label fw-bold">Họ tên:</label>
+        <input type="text" id="name" value="{{ khach.tenkh }}" class="form-control text-center" placeholder="" readonly>
+      </div>
+      <div class="row g-2">
+        <label for="phone" class="form-label fw-bold">Điện thoại:</label>
+        <input type="text" id="phone" value="{{ khach.sdt }}" class="form-control text-center" placeholder="" readonly>
+      </div>
+      <div class="row g-2">
+        <label for="address" class="form-label fw-bold">Địa chỉ giao hàng:</label>
+        <input type="text" id="address" value="{{ khach.diachi }}" class="form-control text-center" placeholder="" readonly>
+      </div>
+      <div class="row g-2">
+        <label for="level" class="form-label fw-bold">Cấp độ thành viên:</label>
+        <input type="text" id="level" value="{{ khach.capdotv }}" class="form-control text-center" placeholder="" readonly>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+{% endblock %}

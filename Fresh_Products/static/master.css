@@ -1,0 +1,43 @@
+ .banner {
+            background: url('https://example.com/banner.jpg') no-repeat center center;
+            background-size: cover;
+            height: 300px;
+        }
+
+        .category-sidebar {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-right: 1px solid #ddd;
+        }
+
+            .category-sidebar h4 {
+                margin-bottom: 20px;
+            }
+
+            .category-sidebar ul {
+                list-style: none;
+                padding: 0;
+            }
+
+                .category-sidebar ul li {
+                    margin-bottom: 10px;
+                }
+
+                    .category-sidebar ul li a {
+                        color: #28a745;
+                        text-decoration: none;
+                    }
+
+                        .category-sidebar ul li a:hover {
+                            text-decoration: underline;
+                        }
+
+        footer {
+            background-color: #28a745;
+            color: white;
+            padding: 20px;
+        }
+
+            footer a {
+                color: #ffd700;
+            }

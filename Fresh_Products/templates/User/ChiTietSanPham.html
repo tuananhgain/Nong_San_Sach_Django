@@ -1,0 +1,167 @@
+{% extends "User/master.html" %}
+{% load static %}
+{% load humanize %}
+{% block title %} Chi tiết sản phẩm {% endblock %}
+
+
+{% block content %}    
+
+<div>
+    <div class="row-detail d-flex">
+        <!-- Cột ảnh -->
+        <div class="col-md-5 picture">
+            <div class="product-container">
+                <div class="main-image ">
+                    <img id="main-img" src="{% static 'HinhAnh/Hình ' %}{{ sp.masp }}/HINH1.jfif" 
+                         class="main-img img-fluid rounded">
+                </div>
+                <div class="thumbnail-images d-flex justify-content-start gap-2">
+                    {% for i in "1234" %}
+                        {% with path="/static/HinhAnh/Hình "|add:sp.masp|add:"/HINH"|add:i|add:".jfif" %}
+                            <img src="{{ path }}" class="thumb-img rounded" onclick="changeImage('{{ path }}')">
+                        {% endwith %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Cột thông tin -->
+        <div class="col-md-7 content">
+            <h3 class="head">{{ sp.tensp }}</h3>
+            <div class="price text-danger fw-bold" style="font-size:20px">
+                 {% if sp.phan_tram_giam %}
+                    <p class="card-text">
+                        <span class="text-decoration-line-through text-danger me-2">
+                            {{ sp.gia1dv|intcomma }} VNĐ
+                        </span>
+                        <span class="fw-bold text-success">
+                            {{ sp.gia_sau_km|floatformat:0|intcomma }} VNĐ
+                        </span>
+                       
+                        / {{ sp.donvitinh }}
+                    </p>
+                {% else %}
+                    <p class="card-text">
+                        {{ sp.gia1dv|intcomma }} VNĐ / {{ sp.donvitinh }}
+                    </p>
+                {% endif %}
+            </div>
+
+            <div class="mt-3">
+                <label for="quantity">Số lượng</label>
+                <input id="quantity" type="number" value="1" min="1" max="100" step="1"
+                       class="form-control w-25 d-inline-block ms-2">
+            </div>
+
+            <div class="mt-4">
+                <form id="cartForm" method="post" action="{% url 'gio_hang' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="productId" value="{{ sp.masp }}">
+                    <input type="hidden" name="quantity" id="quantityInput" value="1">
+
+                    <button type="submit" class="btn btn-success px-4 py-2">
+                        <i class="bi bi-cart-plus"></i> Thêm Vào Giỏ Hàng
+                    </button>
+                </form>
+               
+            </div>
+
+
+        </div>
+    </div>
+
+    <!-- Thông tin sản phẩm -->
+    <div class="info mt-4 p-2 border rounded col-4" style="margin-left: 45px;">
+        <h4 class="text-success">Thông tin sản phẩm</h4>
+        <div class="row">
+            <p class="col-4">Giá bán</p>
+            <p class="col-8">{{ sp.gia1dv|floatformat:0 }} VNĐ</p>
+        </div>
+        <div class="row">
+            <p class="col-4">Đơn vị</p>
+            <p class="col-8">{{ sp.donvitinh }}</p>
+        </div>
+        <div class="row">
+            <p class="col-4">Xuất xứ</p>
+            <p class="col-8">{{ sp.xuatxu }}</p>
+        </div>
+    </div>
+    {% if messages %}
+  {% for message in messages %}
+    <div id="message-{{ forloop.counter }}" class="alert alert-{{ message.tags }} mt-3" style="margin-left: 32px">
+      {{ message }}
+    </div>
+    <script>
+      setTimeout(function () {
+        var msg = document.getElementById("message-{{ forloop.counter }}");
+        if (msg) {
+            msg.style.display = "none";
+        }
+      }, 2500); // 2.5 seconds
+    </script>
+  {% endfor %}
+{% endif %}
+</div>
+
+<!-- CSS -->
+<link rel="stylesheet" href="{% static 'ctsp.css'%}"/>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<!-- JS -->
+<script>
+function changeImage(src) {
+    document.getElementById("main-img").src = src;
+}
+
+document.getElementById("quantity").addEventListener("input", function () {
+    document.getElementById("quantityInput").value = this.value;
+});
+
+          
+document.addEventListener("DOMContentLoaded", function() {
+    const cartForm = document.getElementById("cartForm");
+    if (!cartForm) return;
+
+    cartForm.addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        const soluongtk = Number("{{ sp.soluongtk|escapejs }}");  // ✅ ép sang số an toàn
+        const quantity = parseInt(document.getElementById("quantityInput").value);
+
+        if (soluongtk <= 0) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Hết hàng!',
+                text: 'Sản phẩm này đã hết hàng.'
+            });
+            return;
+        }
+
+        if (quantity > soluongtk) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Không đủ số lượng trong kho!',
+                text: `Không thể thêm ${quantity} sản phẩm này vào giỏ hàng.`
+            });
+            return;
+        }
+
+        Swal.fire({
+            icon: 'question',
+            title: 'Xác nhận thêm vào giỏ hàng?',
+            text: `Bạn muốn thêm ${quantity} sản phẩm này?`,
+            showCancelButton: true,
+            confirmButtonText: 'Có',
+            cancelButtonText: 'Không'
+        }).then((result) => {
+            if (result.isConfirmed) e.target.submit();
+        });
+    });
+});
+
+</script>
+
+{% endblock %}
+
+
+

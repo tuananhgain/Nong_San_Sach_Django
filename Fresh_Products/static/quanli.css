@@ -1,0 +1,67 @@
+/* Sidebar */
+.nav-sidebar {
+    width: 240px;
+    min-height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+/* nav mặc định */
+.nav-sidebar .nav-link {
+    color: white;
+    padding: 10px 15px;
+    display: block;
+    transition: background-color 0.3s ease;
+}
+
+/* hiệu ứng hover */
+.nav-sidebar .nav-link:hover {
+    background-color: aqua; /* xanh đậm bootstrap */
+    color: aliceblue;
+    text-decoration: none;
+}
+
+/* active item */
+.nav-sidebar .nav-item.active .nav-link {
+    background-color: darkred; 
+    font-weight: bold;
+}
+
+
+.nav-sidebar i {
+    margin-right: 8px;
+    font-size: 1rem;
+}
+
+/* Main content */
+.main-content {
+    margin-left: 240px;
+    background-color: #f8f9fa;
+    min-height: 100vh;
+}
+
+/* Footer */
+.footer {
+    margin-left: 240px;
+    background: #f8f9fa;
+    font-size: 0.9rem;
+    color: #6c757d;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .nav-sidebar {
+        position: relative;
+        width: 100%;
+        min-height: auto;
+    }
+
+    .main-content {
+        margin-left: 0;
+    }
+
+    .footer {
+        margin-left: 0;
+    }
+}

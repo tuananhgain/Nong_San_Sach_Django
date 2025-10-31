@@ -1,0 +1,129 @@
+{% extends 'QuanLi/quanli_master.html' %}
+{% load static %}
+{% load humanize %}
+{% block title %}Quản Lí - Thống Kê Hóa Đơn{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h1 class="text-center text-success text-uppercase fw-bold mb-4">
+        Thống kê đơn hàng
+    </h1>
+
+    {# ALERT THÔNG BÁO #}
+    {% if messages %}
+        <div class="mb-3">
+            {% for message in messages %}
+                <div 
+                    class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm rounded-3"
+                    role="alert"
+                    id="alert-{{ forloop.counter }}"
+                >
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        </div>
+        <script>
+            setTimeout(() => {
+                document.querySelectorAll('.alert').forEach(alert => {
+                    alert.style.display = 'none';
+                });
+            }, 3000);
+        </script>
+    {% endif %}
+
+    {# FORM LỌC #}
+    <form method="get" action="{% url 'ThongKeHD_QL' %}" class="d-flex align-items-center gap-3 mb-4">
+        <label for="time-status" class="fw-semibold">Thống kê:</label>
+        <select id="time-status" name="status" class="form-select w-auto shadow-sm rounded-3" onchange="this.form.submit()">
+            <option value="">Tất cả</option>
+            <option value="Theo Ngày" {% if time_filter == 'Theo Ngày' %}selected{% endif %}>Theo Ngày</option>
+            <option value="Theo Tuần" {% if time_filter == 'Theo Tuần' %}selected{% endif %}>Theo Tuần</option>
+            <option value="Theo Tháng" {% if time_filter == 'Theo Tháng' %}selected{% endif %}>Theo Tháng</option>
+            <option value="Theo Năm" {% if time_filter == 'Theo Năm' %}selected{% endif %}>Theo Năm</option>
+        </select>
+    </form>
+
+    {# BẢNG THỐNG KÊ #}
+    <div class="table-responsive shadow-sm rounded-3">
+        <table class="table table-hover table-striped align-middle text-center">
+            <thead class="table-success text-uppercase">
+                <tr>
+                    <th>Hóa Đơn</th>
+                    <th>Ngày đặt</th>
+                    <th>Ngày Giao</th>
+                    <th>Phương thức</th>
+                    <th>Trạng thái</th>
+                    <th>PT Thanh toán</th>
+                    <th>Mã khách</th>
+                    <th>Khuyến mãi</th>
+                    <th>NV giao</th>
+                    <th>Tổng cộng</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in dshd %}
+                <tr>
+                    <td class="fw-semibold">{{ item.mahd }}</td>
+                    <td>{{ item.ngaydat }}</td>
+                    <td>{{ item.ngaygiao }}</td>
+                    <td>{{ item.phuongthucgh }}</td>
+
+                    {# trạng thái màu #}
+                    {% if item.trangthaihd|upper == "HOÀN THÀNH" %}
+                        <td class="fw-semibold text-success">{{ item.trangthaihd }}</td>
+                    {% elif item.trangthaihd|upper == "ĐANG CHỜ" %}
+                        <td class="fw-semibold text-warning">{{ item.trangthaihd }}</td>
+                    {% elif item.trangthaihd|upper == "ĐANG GIAO" %}
+                        <td class="fw-semibold text-primary">{{ item.trangthaihd }}</td>
+                    {% elif item.trangthaihd|upper == "ĐÃ HỦY" %}
+                        <td class="fw-semibold text-danger">{{ item.trangthaihd }}</td>
+                    {% else %}
+                        <td>{{ item.trangthaihd }}</td>
+                    {% endif %}
+
+                    {# phương thức thanh toán #}
+                    {% if item.phuongthucthtoan == "Cash" %}
+                        <td class="text-success">{{ item.phuongthucthtoan }}</td>
+                    {% elif item.phuongthucthtoan == "Bank" %}
+                        <td class="text-warning">{{ item.phuongthucthtoan }}</td>
+                    {% else %}
+                        <td>{{ item.phuongthucthtoan }}</td>
+                    {% endif %}
+
+                    <td>{{ item.makh }}</td>
+                    <td>{{ item.makm }}</td>
+                    <td>{{ item.manv }}</td>
+                    <td class="fw-bold text-success">{{ item.tongtien|intcomma }} VNĐ</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="10" class="text-muted fst-italic py-4">
+                        Không có hóa đơn nào.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{# CSS nhẹ thêm #}
+<style>
+    h1 {
+        letter-spacing: 1px;
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: #e9f7ef;
+    }
+
+    .form-select:focus {
+        box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
+    }
+
+    .alert {
+        margin: 0 10px;
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,99 @@
+{% extends "User/master2.html" %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}Giỏ hàng{% endblock %}
+
+{% block content %}
+<div class="cart">
+    <div class="cart-header">
+        <div></div>
+        <div>Sản phẩm</div>
+        <div>Số lượng</div>
+        <div>Giá 1 sản phẩm</div>
+        <div>Tổng cộng</div>
+        <div></div>
+    </div>
+
+    {% for item in cart.listSP %}
+    <div class="cart-item">
+        <div>
+            <img src="{% static 'HinhAnh/Hình ' %}{{ item.masanpham }}/HINH1.jfif" class="main-img img-fluid rounded">
+        </div>
+        <div>{{ item.tensanpham }}</div>
+
+        <!-- Nút tăng/giảm -->
+        <div>
+            <button class="btn btn-light btn-sm" onclick="updateQuantity('{{ item.masanpham }}', -1)">-</button>
+            {{ item.soluong }}
+            <button class="btn btn-light btn-sm" onclick="updateQuantity('{{ item.masanpham }}', 1)">+</button>
+        </div>
+
+        
+        <div>{{ item.giatien|floatformat:0|add:"0"|intcomma }} VNĐ</div>
+        <div>{{ item.tong_tien|floatformat:0|intcomma }} VNĐ</div>
+
+        <!-- Xóa -->
+        <div>
+            <form method="post" action="{% url 'remove_from_cart' item.masanpham %}">
+                {% csrf_token %}
+                <input type="hidden" name="productId" value="{{ item.masanpham }}">
+                <button type="submit" class="btn btn-danger btn-sm">Xóa</button>
+            </form>
+        </div>
+    </div>
+    {% endfor %}
+
+    <div class="cart-total">
+        Tổng cộng: {{ cart.tong_tien|floatformat:0|intcomma }} VNĐ
+    </div>
+
+    <div class="cart-actions">
+        <a href="{% url 'trang_san_pham' %}" class="btn btn-secondary">Tiếp tục mua sắm</a>
+        <a href="{% url 'thanhtoan' %}" class="btn btn-primary">Thanh toán</a>
+</div>
+
+
+<link rel="stylesheet" href="{% static 'opencart.css' %}">
+<script>
+    function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+    }
+
+    function updateQuantity(productId, quantityChange) {
+        const form = document.createElement('form');
+        form.method = 'POST';
+
+        // Tạo base URL bằng template tag mà không có tham số
+        const baseUrl = "{% url 'update_quantity' 'MASP_PLACEHOLDER' %}";
+        form.action = baseUrl.replace('MASP_PLACEHOLDER', productId);
+
+        const csrf = document.createElement('input');
+        csrf.type = 'hidden';
+        csrf.name = 'csrfmiddlewaretoken';
+        csrf.value = getCookie('csrftoken');
+        form.appendChild(csrf);
+
+        const qtyField = document.createElement('input');
+        qtyField.type = 'hidden';
+        qtyField.name = 'quantityChange';
+        qtyField.value = quantityChange;
+        form.appendChild(qtyField);
+
+        document.body.appendChild(form);
+        form.submit();
+    }
+</script>
+
+{% endblock %}

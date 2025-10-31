@@ -1,0 +1,58 @@
+{% extends "User/master.html" %}
+{% load static %}
+
+{% load humanize %}
+{% block title %}Trang chủ{% endblock %}
+
+{% block content %}
+<h2 class="text-center">SẢN PHẨM NỔI BẬT</h2>
+
+<div class="row">
+    {% for sp in dssp %}
+    <div class="col-md-4 mb-4">
+        <div class="card text-center position-relative">
+            <div class="position-relative">
+                <img src="{% static 'HinhAnh/Hình ' %}{{ sp.masp|add:'/HINH1.jfif' }}"
+                     class="card-img-top anh img-fluid"
+                     alt="{{ sp.tensp }}">
+                
+                {% if sp.makm %}
+                <div class="discount-triangle">
+                            <div class="discount-text">
+                                -{{ sp.makm.giamgia|floatformat:0 }}%
+                            </div>
+                        </div>
+                {% endif %}
+            </div>
+
+            <div class="card-body">
+                <h5 class="card-title">{{ sp.tensp }}</h5>
+
+                {% if sp.gia_khuyenmai %}
+                    <p class="card-text">
+                        <span class="text-decoration-line-through text-danger me-2">
+                            {{ sp.gia1dv|intcomma }} VNĐ
+                        </span>
+                        <span class="fw-bold text-success">
+                            {{ sp.gia_khuyenmai|floatformat:0|intcomma }} VNĐ
+                        </span>
+                        / {{ sp.donvitinh }}
+                    </p>
+                {% else %}
+                    <p class="card-text">
+                        {{ sp.gia1dv|intcomma }} VNĐ / {{ sp.donvitinh }}
+                    </p>
+                {% endif %}
+
+                <a href="{% url 'chitietsanpham' sp.masp %}" class="btn btn-success nav-link text-light">
+                    Xem Chi tiết
+                </a>
+            </div>
+        </div>
+    </div>
+{% endfor %}
+
+</div>
+<link rel="stylesheet" href="{% static 'khuyenmai.css'%}"/>
+
+{% endblock %}

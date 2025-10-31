@@ -1,0 +1,9 @@
+<ul class="nav flex-column">
+    {% for dm in dsdm %}
+        <li class="nav-item border">
+            <a href="{% url 'SortSanPhamTheoDM' dm.madm %}" class="nav-link">
+                {{ dm.tendm }}
+            </a>
+        </li>
+    {% endfor %}
+</ul>

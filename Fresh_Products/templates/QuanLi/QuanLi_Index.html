@@ -1,0 +1,148 @@
+{% extends 'QuanLi/quanli_master.html' %}
+{% load static %}
+{% load humanize %}
+{% block title %}Quản Lí - Đơn Hàng{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+
+    <!-- ✅ Tiêu đề -->
+    <div class="text-center mb-4">
+        <h1 class="fw-bold text-success">QUẢN LÍ ĐƠN HÀNG</h1>
+    </div>
+
+    <!-- ✅ Hiển thị thông báo -->
+    {% if messages %}
+        <div class="col-md-8 mx-auto">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- ✅ Form lọc trạng thái -->
+    <div class="row mb-3">
+        <div class="col-md-4">
+            <form method="get" action="{% url 'quanli_index' %}">
+                <label for="filter-status" class="form-label fw-semibold">Lọc trạng thái:</label>
+                <select id="filter-status" name="status" class="form-select" onchange="this.form.submit()">
+                    <option value="">Tất cả</option>
+                    <option value="HOÀN THÀNH" {% if request.GET.status == "HOÀN THÀNH" %}selected{% endif %}>Hoàn thành</option>
+                    <option value="ĐANG CHỜ" {% if request.GET.status == "ĐANG CHỜ" %}selected{% endif %}>Đang chờ</option>
+                    <option value="ĐANG GIAO" {% if request.GET.status == "ĐANG GIAO" %}selected{% endif %}>Đang giao</option>
+                    <option value="ĐÃ HỦY" {% if request.GET.status == "ĐÃ HỦY" %}selected{% endif %}>Đã hủy</option>
+                </select>
+            </form>
+        </div>
+    </div>
+
+    <!-- ✅ Bảng dữ liệu -->
+    <div class="table-responsive shadow-sm rounded-3">
+        <table class="table table-bordered table-hover align-middle text-center">
+            <thead class="table-success text-uppercase fw-semibold">
+                <tr>
+                    <th>Hóa Đơn</th>
+                    <th>Ngày đặt</th>
+                    <th>Ngày Giao</th>
+                    <th>Phương thức</th>
+                    <th>Trạng thái</th>
+                    <th>PT Thanh toán</th>
+                    <th>Mã khách</th>
+                    <th>Khuyến mãi</th>
+                    <th>NV giao</th>
+                    <th>Tổng cộng</th>
+                    <th>Thay đổi</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in hoadons %}
+                <tr>
+                    <td>{{ item.mahd }}</td>
+                    <td>{{ item.ngaydat }}</td>
+                    <td>{{ item.ngaygiao }}</td>
+                    <td>{{ item.phuongthucgh }}</td>
+
+                    <td class="
+                        {% if item.trangthaihd|upper == 'HOÀN THÀNH' %} text-success
+                        {% elif item.trangthaihd|upper == 'ĐANG CHỜ' %} text-warning
+                        {% elif item.trangthaihd|upper == 'ĐANG GIAO' %} text-primary
+                        {% elif item.trangthaihd|upper == 'ĐÃ HỦY' %} text-danger
+                        {% endif %}">
+                        {{ item.trangthaihd }}
+                    </td>
+
+                    <td class="
+                        {% if item.phuongthucthtoan == 'Cash' %} text-success
+                        {% elif item.phuongthucthtoan == 'Bank' %} text-warning
+                        {% endif %}">
+                        {{ item.phuongthucthtoan }}
+                    </td>
+
+                    <td>{{ item.makh }}</td>
+                    <td>{{ item.makm }}</td>
+                    <td>{{ item.manv }}</td>
+                    <td class="fw-semibold">{{ item.tongtien|floatformat:0 }} VNĐ</td>
+
+                   <td class="text-center">
+                        {% if item.trangthaihd|upper == "ĐANG CHỜ" %}
+                            <form action="{% url 'change_status' %}" method="post" 
+                                onsubmit="return confirm('Duyệt đơn hàng này?');" class="d-inline-block">
+                                {% csrf_token %}
+                                <input type="hidden" name="mahd" value="{{ item.mahd }}">
+                                <input type="hidden" name="changeStatus" value="ĐANG GIAO">
+                                <button type="submit" class="btn btn-warning action-btn text-white fw-semibold">
+                                    Duyệt giao
+                                </button>
+                            </form>
+                        {% elif item.trangthaihd|upper == "ĐANG GIAO" %}
+                            <form action="{% url 'change_status' %}" method="post" 
+                                onsubmit="return confirm('Xác nhận giao thành công?');" class="d-inline-block">
+                                {% csrf_token %}
+                                <input type="hidden" name="mahd" value="{{ item.mahd }}">
+                                <input type="hidden" name="changeStatus" value="HOÀN THÀNH">
+                                <button type="submit" class="btn btn-primary action-btn text-white fw-semibold">
+                                    Đã giao
+                                </button>
+                            </form>
+                        {% else %}
+                            <button type="button" class="btn btn-secondary action-btn text-white fw-semibold" disabled>
+                                Không khả dụng
+                            </button>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- ✅ CSS thêm nhẹ -->
+<style>
+    body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    }
+    .table th {
+        vertical-align: middle;
+    }
+    .table-hover tbody tr:hover {
+        background-color: #f1fdf1; /* xanh nhạt khi hover */
+    }
+    .btn-sm {
+        padding: 4px 8px;
+    }
+    .action-btn {
+    width: 140px;          /* ✅ Chiều rộng cố định */
+    padding: 8px 0;        /* ✅ Padding dọc để cân chữ */
+    font-size: 0.95rem;
+    text-align: center;
+    border-radius: 6px;
+    transition: all 0.2s ease-in-out;
+    white-space: nowrap;   /* Không xuống dòng */
+}
+
+</style>
+{% endblock %}

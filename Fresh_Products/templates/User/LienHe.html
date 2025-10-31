@@ -1,0 +1,56 @@
+{% extends "User/master2.html" %}
+{% load static %}
+{% load humanize %}
+{% block title %} Liên hệ {% endblock %}
+
+{% block content %}   
+{% load static %}
+<div class="container my-5 contact-info-section">
+  <div class="card shadow-sm border-0 p-4">
+    <h2 class="mb-3 text-success">Liên hệ với NÔNG SẢN SẠCH</h2>
+    <p class="text-muted mb-4">Nếu bạn có bất kỳ câu hỏi, góp ý hoặc cần hỗ trợ, vui lòng liên hệ qua thông tin dưới đây. Chúng tôi sẽ phản hồi sớm nhất có thể.</p>
+
+    <div class="row g-4">
+      <div class="col-md-4 d-flex">
+        <div class="me-3 text-success fs-4">
+          <i class="bi bi-telephone-fill"></i>
+        </div>
+        <div>
+          <h6 class="fw-bold mb-1">Hotline hỗ trợ</h6>
+          <p class="mb-0 text-muted">(+84) 889 803 789</p>
+          <small class="text-secondary">Thứ 2 – Thứ 6 | 8:00 – 17:30</small>
+        </div>
+      </div>
+
+      <div class="col-md-4 d-flex">
+        <div class="me-3 text-success fs-4">
+          <i class="bi bi-envelope-fill"></i>
+        </div>
+        <div>
+          <h6 class="fw-bold mb-1">Email</h6>
+          <p class="mb-0 text-muted">support@nongsansach.vn</p>
+          <small class="text-secondary">Phản hồi trong vòng 24h</small>
+        </div>
+      </div>
+
+      <div class="col-md-4 d-flex">
+        <div class="me-3 text-success fs-4">
+          <i class="bi bi-geo-alt-fill"></i>
+        </div>
+        <div>
+          <h6 class="fw-bold mb-1">Địa chỉ</h6>
+          <p class="mb-0 text-muted">Phường Chánh Hưng, TP. Hồ Chí Minh</p>
+          <small class="text-secondary">Xem bản đồ Google Map</small>
+        </div>
+      </div>
+    </div>
+
+    <hr class="my-4">
+    <div class="text-center text-muted small">
+      <p class="mb-1">Bạn có thể xem thêm <a href="#" class="text-success text-decoration-none">chính sách giao hàng</a> hoặc <a href="#" class="text-success text-decoration-none">đổi trả</a>.</p>
+    </div>
+  </div>
+</div>
+
+
+{% endblock %}
