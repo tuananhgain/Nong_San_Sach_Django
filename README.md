@@ -1,7 +1,7 @@
-# Django Project B
+# Nông Sản Sạch Django
 
 ## 🚀 Giới thiệu
-Dự án Django này thực hiện chức năng [mô tả ngắn gọn: ví dụ “quản lý người dùng”, “cửa hàng online”, v.v.]
+Dự án Django này thực hiện chức năng: user: mua hàng, xem chi tiết, giỏ hàng,thanh toán. admin: quản lý user, khuyến mãi, hóa đơn
 
 ## ⚙️ Cài đặt
 1️⃣ Clone project:
