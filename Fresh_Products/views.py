@@ -163,7 +163,7 @@ def dangky(request):
 
         # Kiểm tra tài khoản tồn tại chưa
         tk = "TK_" + username
-        if tkkhachhang.objects.filter(tentkkh=tk).exists():
+        if tkkhachhang.objects.filter(tentk=tk).exists():
             messages.error(request, "Tài khoản đã tồn tại.")
             return redirect("dangky")
 
@@ -193,14 +193,14 @@ def dangky(request):
 
         # Tạo tài khoản mới
         new_account = tkkhachhang(
-            tentkkh=tk,
+            tentk=tk,
             makh=customer.makh,
             matkhau=password
         )
         new_account.save()
 
         # Kiểm tra tài khoản có lưu được không
-        if not tkkhachhang.objects.filter(tentkkh=new_account.tentkkh).exists():
+        if not tkkhachhang.objects.filter(tentk=new_account.tentk).exists():
             messages.error(request, "Tạo tài khoản không thành công.")
             return redirect("dangky")
 
@@ -214,7 +214,7 @@ def dangky(request):
 
         # Lưu thông báo thành công
         messages.success(request, "Đăng ký thành công. Vui lòng đăng nhập.")
-        request.session["Username"] = new_account.tentkkh
+        request.session["Username"] = new_account.tentk
         request.session["Password"] = new_account.matkhau
 
         return redirect("dangky")
