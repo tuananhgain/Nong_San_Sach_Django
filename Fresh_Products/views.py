@@ -666,11 +666,4 @@ def thongkeHD(request):
     return render(request, 'QuanLi/ThongKeHD.html', {'dshd': dshd})
 
 #####################################THÔNG TIN KHÁCH HÀNG - LỊCH SỬ MUA HÀNG##################33333
-def thongtinKH(request):
-    
-    ma_kh = request.session.get('MaKH', None)
-    khach = None
-    if ma_kh:
-        khach = khachhang.objects.filter(makh=ma_kh).first()
 
-    return render(request,"User/ThongTinKH.html",{"khach":khach})
