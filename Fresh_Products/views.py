@@ -183,14 +183,20 @@ def dangky(request):
 
         new_account = tkkhachhang(
             tentk=tk,
-            makh=customer,  # gán object, không phải string
+            makh=customer,
             matkhau=password
         )
         new_account.save()
+
+        # Kiểm tra tài khoản có lưu được không
+        if not tkkhachhang.objects.filter(tentk=new_account.tentk).exists():
+            messages.error(request, "Tạo tài khoản không thành công.")
+            return redirect("dangky")
         loai = loaithetv.objects.get(maloaithe="T01")
+        # Cập nhật thẻ thành viên
         card_update = capnhatthe(
             makh=customer,
-            maloaithe=loai,
+            maloaithe=loai,  # mã thẻ mặc định
             ngaycap=timezone.now()
         )
         card_update.save()
