@@ -147,7 +147,6 @@ def dangky(request):
     if request.method == "GET":
         return render(request, "User/DangKy.html")
 
-    # POST: xử lý dữ liệu đăng ký
     if request.method == "POST":
         tenkhachhang = request.POST.get("tenkhachhang")
         username = request.POST.get("Username")
@@ -156,42 +155,32 @@ def dangky(request):
         password = request.POST.get("password")
         confirm = request.POST.get("confirm")
 
-        # Kiểm tra mật khẩu xác nhận
         if password != confirm:
             messages.error(request, "Mật khẩu và xác nhận mật khẩu không khớp.")
             return redirect("dangky")
 
-        # Kiểm tra tài khoản tồn tại chưa
         tk = "TK_" + username
         if tkkhachhang.objects.filter(tentk=tk).exists():
             messages.error(request, "Tài khoản đã tồn tại.")
             return redirect("dangky")
 
-        # Sinh mã khách hàng tự động
         last_customer = khachhang.objects.aggregate(Max("makh"))["makh__max"]
         if last_customer:
-            last_num = int(last_customer[2:])  # bỏ "KH"
+            last_num = int(last_customer[2:])
             new_makh = f"KH{last_num+1:03d}"
         else:
-            new_makh = "KH000"
+            new_makh = "KH001"
 
-        # Kiểm tra khách hàng theo số điện thoại
         customer, created = khachhang.objects.get_or_create(
             sdt=sdt,
             defaults={
                 "makh": new_makh,
                 "tenkh": tenkhachhang,
                 "diachi": address,
-                "capdotv": "Đồng",  # mặc định cấp độ thẻ
+                "capdotv": "Đồng",
             },
         )
 
-        # Nếu khách hàng chưa tạo thành công
-        if not customer:
-            messages.error(request, "Có lỗi khi tạo khách hàng mới.")
-            return redirect("dangky")
-
-        # Tạo tài khoản mới
         new_account = tkkhachhang(
             tentk=tk,
             makh=customer,
@@ -212,12 +201,9 @@ def dangky(request):
         )
         card_update.save()
 
-        # Lưu thông báo thành công
         messages.success(request, "Đăng ký thành công. Vui lòng đăng nhập.")
-        request.session["Username"] = new_account.tentk
-        request.session["Password"] = new_account.matkhau
+        return redirect("dangnhap")
 
-        return redirect("dangky")
 
 # Đăng xuất
 
@@ -686,11 +672,4 @@ def thongkeHD(request):
     return render(request, 'QuanLi/ThongKeHD.html', {'dshd': dshd})
 
 #####################################THÔNG TIN KHÁCH HÀNG - LỊCH SỬ MUA HÀNG##################33333
-def thongtinKH(request):
-    
-    ma_kh = request.session.get('MaKH', None)
-    khach = None
-    if ma_kh:
-        khach = khachhang.objects.filter(makh=ma_kh).first()
 
-    return render(request,"User/ThongTinKH.html",{"khach":khach})
